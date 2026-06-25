@@ -25,7 +25,7 @@ class EventBiasAttention(Attention):
         self.event_bias: torch.Tensor | None = None  # (B, num_patches); set externally
         self.fused_attn = False  # must be False so we can intercept the logits
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
+    def forward(self, x: torch.Tensor, attn_mask=None, is_causal: bool = False) -> torch.Tensor:
         B, N, C = x.shape
         qkv = (
             self.qkv(x)
