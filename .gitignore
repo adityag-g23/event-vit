@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+.venv/
+venv/
+env/
+.env
+
+# Data & checkpoints (too large for git)
+data/
+checkpoints/
+*.h5
+*.hdf5
+*.pt
+*.pth
+*.npy
+*.npz
+
+# Outputs
+attention_comparison.png
+*.png
+*.jpg
+*.mp4
+
+# macOS
+.DS_Store
+
+# VS Code (keep launch configs, ignore local settings)
+.vscode/settings.json
+
+# Logs
+*.log
+runs/
+wandb/

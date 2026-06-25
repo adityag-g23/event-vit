@@ -1,0 +1,41 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Train",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/train.py",
+      "args": [
+        "--data_root", "data/peod",
+        "--epochs", "20",
+        "--batch_size", "8",
+        "--save_dir", "checkpoints"
+      ],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Evaluate",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/evaluate.py",
+      "args": [
+        "--data_root", "data/peod",
+        "--checkpoint", "checkpoints/ckpt_epoch020.pt"
+      ],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Visualize",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/visualize.py",
+      "args": [
+        "--image", "data/sample.png",
+        "--events_npy", "data/sample_events.npy",
+        "--out", "attention_comparison.png"
+      ],
+      "console": "integratedTerminal"
+    }
+  ]
+}
