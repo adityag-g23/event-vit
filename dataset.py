@@ -83,18 +83,23 @@ def load_dat_events(path: str) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
         if len(raw) == 0:
             return empty
 
-        # Prophesee EVT2 compact format: 8 bytes per event
-        #   word0 (u32): timestamp in µs
-        #   word1 (u32): encoded address — bits[0:10]=x, bits[11:20]=y, bit[21]=p
-        dtype = np.dtype([("t", "<u4"), ("addr", "<u4")])
+        # Prophesee EVT2: 8 bytes per event
+        #   word0 (u32, first):  bits[10:0]=x, bits[21:11]=y, bits[31:28]=type
+        #   word1 (u32, second): bits[27:0]=timestamp_µs, bits[31:28]=type
+        dtype = np.dtype([("ev", "<u4"), ("ts", "<u4")])
         if len(raw) % 8 != 0:
-            raw = raw[: (len(raw) // 8) * 8]   # trim incomplete last record
+            raw = raw[: (len(raw) // 8) * 8]
         data = np.frombuffer(raw, dtype=dtype)
 
-        t = data["t"]
-        addr = data["addr"]
-        x = (addr & 0x7FF).astype(np.uint16)
-        y = ((addr >> 11) & 0x3FF).astype(np.uint16)
+        # Keep only CD events: type 0 (polarity off) and type 1 (polarity on)
+        ev_type = (data["ev"] >> 28) & 0xF
+        cd = (ev_type <= 1)
+        ev = data["ev"][cd]
+        ts = data["ts"][cd]
+
+        x = (ev & 0x7FF).astype(np.uint16)           # bits 0-10
+        y = ((ev >> 11) & 0x7FF).astype(np.uint16)   # bits 11-21
+        t = (ts & 0x0FFFFFFF).astype(np.uint32)       # bits 0-27
         return x, y, t
 
     except Exception:
